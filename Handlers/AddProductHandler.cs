@@ -4,17 +4,15 @@ using MyCommand;
 
 namespace MyHandler
 {
-    public class AddProductHandler : IRequestHandler<AddProductCommand> 
-{ 
-    private readonly FakeDataStore _fakeDataStore; 
-        
-    public AddProductHandler(FakeDataStore fakeDataStore) => _fakeDataStore = fakeDataStore; 
-        
-    public async Task Handle(AddProductCommand request, CancellationToken cancellationToken) 
+    public class AddProductHandler : IRequestHandler<AddProductCommand, Product>
+{
+    private readonly FakeDataStore _fakeDataStore;
+    public AddProductHandler(FakeDataStore fakeDataStore) => _fakeDataStore = fakeDataStore;
+    public async Task<Product> Handle(AddProductCommand request, CancellationToken cancellationToken)
     {
-        await _fakeDataStore.AddProduct(request.Product); 
+        await _fakeDataStore.AddProduct(request.Product);
             
-        return; 
-    } 
+        return request.Product;
+    }
 }
 }

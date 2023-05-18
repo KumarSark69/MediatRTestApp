@@ -2,6 +2,7 @@ using DataStore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MyCommand;
+using MyNotification;
 using MyQuries;
 
 namespace ProductController
@@ -20,14 +21,45 @@ namespace ProductController
 
             return Ok(products);
         }
+
+
+
+
+
+
+
+
+        // [HttpPost]
+        // public async Task<ActionResult> AddProduct([FromBody] Product product)
+        // {
+        //     var productToReturn = await _mediator.Send(new AddProductCommand(product));
+
+        //     return CreatedAtRoute("GetProductById", new { id = productToReturn.Id }, productToReturn);
+        // }
+
+
+
+
         [HttpPost]
         public async Task<ActionResult> AddProduct([FromBody] Product product)
         {
-            {
-                await _mediator.Send(new AddProductCommand(product));
+            var productToReturn = await _mediator.Send(new AddProductCommand(product));
 
-                return StatusCode(201);
-            }
+            await _mediator.Publish(new ProductAddedNotification(productToReturn));
+
+            return CreatedAtRoute("GetProductById", new { id = productToReturn.Id }, productToReturn);
+        }
+
+
+
+
+
+        [HttpGet("{id:int}", Name = "GetProductById")]
+        public async Task<ActionResult> GetProductById(int id)
+        {
+            var product = await _mediator.Send(new GetProductByIdQuery(id));
+
+            return Ok(product);
         }
 
     }

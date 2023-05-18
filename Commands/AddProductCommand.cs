@@ -3,5 +3,5 @@ using MediatR;
 
 namespace MyCommand
 {
-    public record AddProductCommand(Product Product) : IRequest;
+   public record AddProductCommand(Product Product) : IRequest<Product>;
 }
